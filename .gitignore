@@ -7,6 +7,9 @@ bin/
 launch
 launch.exe
 
+arch 
+frontend
+.agents/
 
 # Internal testing
 /extra-docs
