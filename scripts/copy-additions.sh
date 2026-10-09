@@ -48,6 +48,11 @@ run 'cp -v ../../settings/properties.json .'
 run 'touch moz.build'
 popd > /dev/null
 
+# Ensure branding icons are freshly generated from default256.png
+if [[ -f ../scripts/generate-branding.py ]]; then
+    python3 ../scripts/generate-branding.py || true
+fi
+
 # Generate Assets.car for macOS builds (if on macOS) or ensure it exists
 if [[ ! -f ../additions/browser/branding/camoufox/Assets.car ]]; then
     echo "Generating Assets.car..."

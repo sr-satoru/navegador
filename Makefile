@@ -156,6 +156,8 @@ build: unbusy
 	@if [ ! -f $(cf_source_dir)/_READY ]; then \
 		make dir; \
 	fi
+	python3 scripts/generate-branding.py || true
+	cp -r additions/* $(cf_source_dir)/ 2>/dev/null || true
 	cd $(cf_source_dir) && ./mach build $(_ARGS)
 
 package-linux: fonts-extract
@@ -202,6 +204,9 @@ edit-cfg:
 		exit 1; \
 	fi
 	$(EDITOR) $(cf_source_dir)/obj-x86_64-pc-linux-gnu/dist/bin/camoufox.cfg
+
+branding:
+	python3 scripts/generate-branding.py
 
 stock-ui:
 	python3 scripts/apply-stock-ui.py

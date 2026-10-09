@@ -88,38 +88,20 @@ def restore_stock_ui():
         print("ℹ️  [3/6] additions/browser/themes/addons/dark já estava limpo.")
 
     # -------------------------------------------------------------
-    # 4. Substituir Ícones de Branding pelos Ícones Oficiais do Firefox
+    # 4. Atualizar Ativos de Branding a partir do ícone personalizado default256.png
     # -------------------------------------------------------------
     branding_dir = REPO_ROOT / "additions" / "browser" / "branding" / "camoufox"
-    source_icon = find_system_firefox_icon()
+    gen_script = REPO_ROOT / "scripts" / "generate-branding.py"
 
-    if source_icon and branding_dir.exists():
+    if gen_script.exists():
         try:
-            with Image.open(source_icon) as base_img:
-                base_img = base_img.convert("RGBA")
-
-                # Gera os tamanhos padrão PNG para Linux, janelas e abas
-                sizes = [16, 22, 24, 32, 48, 64, 128, 256]
-                for s in sizes:
-                    resized = base_img.resize((s, s), Image.Resampling.LANCZOS)
-                    target_file = branding_dir / f"default{s}.png"
-                    resized.save(target_file, "PNG")
-
-                # Gera logo.png
-                base_img.resize((128, 128), Image.Resampling.LANCZOS).save(branding_dir / "logo.png", "PNG")
-
-                # Gera o firefox.ico multi-resolução para Windows
-                ico_sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
-                ico_path = branding_dir / "firefox.ico"
-                ico_path64 = branding_dir / "firefox64.ico"
-                base_img.save(ico_path, format="ICO", sizes=ico_sizes)
-                base_img.save(ico_path64, format="ICO", sizes=ico_sizes)
-
-                print("✅ [4/6] Ícones oficiais do Firefox gerados e aplicados (default*.png, logo.png, firefox.ico).")
+            import subprocess
+            subprocess.run([sys.executable, str(gen_script)], check=True)
+            print("✅ [4/6] Ícones personalizados mantidos e atualizados a partir de default256.png.")
         except Exception as e:
-            print(f"⚠️  [4/6] Falha ao gerar ícones com Pillow: {e}")
+            print(f"⚠️  [4/6] Falha ao rodar generate-branding.py: {e}")
     else:
-        print("ℹ️  [4/6] Ícone base não encontrado no sistema ou pasta de branding ausente.")
+        print("ℹ️  [4/6] Script de geração de branding não encontrado.")
 
     # -------------------------------------------------------------
     # 5. Atualizar Textos de Marca (brand.properties e brand.dtd)
